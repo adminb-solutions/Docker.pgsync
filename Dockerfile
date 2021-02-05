@@ -1,8 +1,13 @@
-FROM ruby:alpine
+FROM ruby:alpine as base
 
-RUN apk add --update alpine-sdk ruby-dev postgresql-dev 
+RUN apk add --no-cache libpq
 
-RUN gem install pgsync
+RUN apk add --no-cache --virtual .build-deps \
+  alpine-sdk \
+  ruby-dev \
+  postgresql-dev \
+&& gem install pgsync \
+&& apk del .build-deps
 
 WORKDIR /sync
 
